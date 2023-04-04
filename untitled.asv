@@ -1,0 +1,25 @@
+img = imread('datasets\ex_2\2.jpg');
+gray_img = rgb2gray(img);
+bi = imbinarize(gray_img);
+
+%ทำ edge detection
+edge_img = edge(bi, 'Canny');
+
+%แบ่ง detected object
+labeled_img = bwlabel(edge_img);
+
+%หาพื้นที่วัตถุ
+stats = regionprops('table',labeled_img,'Area');
+
+%
+red_img = cat(3, ones(size(edge_img)), zeros(size(edge_img)), zeros(size(edge_img)));
+red_img(:,:,1) = edge_img.*red_img(:,:,1);
+red_img(:,:,2) = edge_img.*red_img(:,:,2);
+red_img(:,:,3) = edge_img.*red_img(:,:,3);
+
+% แสดงภาพ
+imshow(img);
+hold on
+h = imshow(red_img);
+set(h, 'AlphaData', edge_img);
+area_list = stats.Area;
